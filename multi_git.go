@@ -5,14 +5,13 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"github.com/nexidian/gocliselect"
-	"golang.org/x/sys/windows"
 )
 
 const (
-	git_config_list_command = "git config --list"
+	mainGitCommand = "git"
 )
 
+var gitConfigList = []string{"config", "--list"}
 
 // main menu 
 func simpleMenu() string {
@@ -32,11 +31,14 @@ func simpleMenu() string {
 	return options[choice-1]
 }
 
+// to get profiles list 
+func getProfilesList(){
+	fmt.Println("Need to read from a notes and list out here")
+}
 
-
-
-func get_git_details(){
-	gitConfigListCmd := exec.Command("git","config","--list")
+// to get current profile detail
+func getActiveProfileDetail(){
+	gitConfigListCmd := exec.Command(mainGitCommand, gitConfigList...)
 	stdout, err := gitConfigListCmd.Output()
 
 	if err != nil{
@@ -51,14 +53,33 @@ func get_git_details(){
 	for _, line := range lines {
 		if strings.HasPrefix(line, "user.name="){
 			userName := strings.TrimPrefix(line, "user.name=")
-			fmt.Println("The user name is", userName)
+			fmt.Println("The active user name is", userName)
 			return 
 		}
 	}
 }
 
+func addProfile(){
+	fmt.Println("Add a new username and email to the list")
+}
+
+func removeProfile(){
+	fmt.Println("Remove an username and email from the list")
+}
+
 func main(){
 	choice := simpleMenu()
-	fmt.Printf("Choice: %s\n", choice)
-	get_git_details()
+
+	switch choice{
+	case "list":
+		getProfilesList()
+	case "active":
+		getActiveProfileDetail()
+	case "add":
+		addProfile()
+	case "remove":
+		removeProfile()
+	default:
+		fmt.Println("Invalid option !")
+		}			
 }
