@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
+	"path/filepath"
 )
 
 const (
@@ -29,6 +31,17 @@ func simpleMenu() string {
 		os.Exit(1)
 	}
 	return options[choice-1]
+}
+
+// to get documents folder path
+func getDocumentsPath() string {
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	documentsPath := filepath.Join(usr.HomeDir, "Documents")
+	return documentsPath
 }
 
 // to get profiles list 
