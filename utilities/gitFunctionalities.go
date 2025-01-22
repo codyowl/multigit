@@ -1,58 +1,28 @@
-package main 
+package utilities
 
 import (
 	"fmt"
-	"os"
+	"bufio"
+	"path/filepath"
 	"os/exec"
+	"os"
 	"os/user"
 	"strings"
-	"path/filepath"
-	"bufio"
 )
 
-const (
-	mainGitCommand = "git"
-)
-
-var gitConfigList = []string{"config", "--list"}
-
-// main menu 
-func simpleMenu() string {
-	options := []string{"list", "active", "add", "remove"}
-	fmt.Println("What would you like to do?")
-	for i, option := range options {
-		fmt.Printf("%d. %s\n", i+1, option)
-	}
-
-	var choice int
-	fmt.Scan(&choice)
-
-	if choice < 1 || choice > len(options) {
-		fmt.Println("Invalid choice. Exiting.")
-		os.Exit(1)
-	}
-	return options[choice-1]
-}
-
-// to get documents folder path
-func getDocumentsPath() string {
-	usr, err := user.Current()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	documentsPath := filepath.Join(usr.HomeDir, "Documents")
-	return documentsPath
-}
+// git commands
+const mainGitCmd = "git"
+// for sub commands
+var gitConfigListCmd = []string{"config", "--list"}
 
 // to get profiles list 
-func getProfilesList(){
+func GetProfilesList(){
 	fmt.Println("Need to read from a notes and list out here")
 }
 
 // to get current profile detail
-func getActiveProfileDetail(){
-	gitConfigListCmd := exec.Command(mainGitCommand, gitConfigList...)
+func GetActiveProfileDetail(){
+	gitConfigListCmd := exec.Command(mainGitCmd , gitConfigListCmd...)
 	stdout, err := gitConfigListCmd.Output()
 
 	if err != nil{
@@ -73,7 +43,8 @@ func getActiveProfileDetail(){
 	}
 }
 
-func addProfile(){
+// helper function to add a profile
+func AddProfile(){
 	fmt.Println("Add a new username and email to the list")
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Enter username: ")
@@ -107,23 +78,18 @@ func addProfile(){
 	fmt.Println("Profile added successfully!")
 }
 
-func removeProfile(){
-	fmt.Println("Remove an username and email from the list")
+// helper function to get documents folder path
+func getDocumentsPath() string {
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	documentsPath := filepath.Join(usr.HomeDir, "Documents")
+	return documentsPath
 }
 
-func main(){
-	choice := simpleMenu()
-
-	switch choice{
-	case "list":
-		getProfilesList()
-	case "active":
-		getActiveProfileDetail()
-	case "add":
-		addProfile()
-	case "remove":
-		removeProfile()
-	default:
-		fmt.Println("Invalid option !")
-		}			
+// helper function to remove a profile
+func RemoveProfile(){
+	fmt.Println("Remove an username and email from the list")
 }
